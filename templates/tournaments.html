@@ -1,0 +1,323 @@
+{% extends "base.html" %}
+
+{% block title %}Tournaments - BombSquad Tournament Bot{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h2">
+        <i class="fas fa-trophy me-2"></i>Tournaments
+    </h1>
+    <div class="btn-group" role="group">
+        <button type="button" class="btn btn-outline-success" onclick="filterTournaments('registration')">
+            <i class="fas fa-user-plus me-1"></i>Registration Open
+        </button>
+        <button type="button" class="btn btn-outline-warning" onclick="filterTournaments('active')">
+            <i class="fas fa-play me-1"></i>Active
+        </button>
+        <button type="button" class="btn btn-outline-info" onclick="filterTournaments('completed')">
+            <i class="fas fa-check me-1"></i>Completed
+        </button>
+        <button type="button" class="btn btn-outline-primary" onclick="filterTournaments('all')">
+            <i class="fas fa-list me-1"></i>All
+        </button>
+    </div>
+</div>
+
+{% if tournaments %}
+<div class="row" id="tournaments-container">
+    {% for tournament in tournaments %}
+    <div class="col-lg-6 col-xl-4 mb-4 tournament-card" data-status="{{ tournament.status }}">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">{{ tournament.name }}</h5>
+                {% if tournament.status == 'registration' %}
+                    <span class="badge bg-success">Registration Open</span>
+                {% elif tournament.status == 'active' %}
+                    <span class="badge bg-warning">Active</span>
+                {% elif tournament.status == 'completed' %}
+                    <span class="badge bg-info">Completed</span>
+                {% endif %}
+            </div>
+            <div class="card-body d-flex flex-column">
+                <p class="card-text text-muted mb-3">{{ tournament.description }}</p>
+                
+                <div class="row text-center mb-3">
+                    <div class="col-6">
+                        <div class="border-end">
+                            <h6 class="text-primary mb-1">{{ tournament.participants|length }}</h6>
+                            <small class="text-muted">Participants</small>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <h6 class="text-secondary mb-1">{{ tournament.max_players }}</h6>
+                        <small class="text-muted">Max Players</small>
+                    </div>
+                </div>
+
+                <!-- Progress Bar for Registration -->
+                {% if tournament.status == 'registration' %}
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <small class="text-muted">Registration Progress</small>
+                        <small class="text-muted">
+                            {{ "%.1f"|format((tournament.participants|length / tournament.max_players) * 100) }}%
+                        </small>
+                    </div>
+                    <div class="progress" style="height: 8px;">
+                        <div class="progress-bar bg-success" role="progressbar" 
+                             style="width: {{ (tournament.participants|length / tournament.max_players) * 100 }}%"
+                             aria-valuenow="{{ (tournament.participants|length / tournament.max_players) * 100 }}" 
+                             aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Tournament Details -->
+                <div class="tournament-details mb-3">
+                    <div class="row">
+                        <div class="col-12">
+                            <small class="text-muted">
+                                <i class="fas fa-id-card me-1"></i>
+                                Tournament ID: <code>{{ tournament.id }}</code>
+                            </small>
+                        </div>
+                    </div>
+                    
+                    {% if tournament.matches %}
+                    <div class="row mt-2">
+                        <div class="col-12">
+                            <small class="text-muted">
+                                <i class="fas fa-sword-cross me-1"></i>
+                                Matches: {{ tournament.matches|length }}
+                            </small>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Participants Preview -->
+                {% if tournament.participants %}
+                <div class="mb-3">
+                    <small class="text-muted d-block mb-2">
+                        <i class="fas fa-users me-1"></i>
+                        {% if tournament.participants|length <= 3 %}
+                            Participants:
+                        {% else %}
+                            Participants (showing first 3):
+                        {% endif %}
+                    </small>
+                    <div class="participants-preview">
+                        {% for participant_id in tournament.participants[:3] %}
+                            <span class="badge bg-secondary me-1 mb-1">
+                                Player {{ participant_id[:8] }}
+                            </span>
+                        {% endfor %}
+                        {% if tournament.participants|length > 3 %}
+                            <span class="badge bg-light text-dark">
+                                +{{ tournament.participants|length - 3 }} more
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Tournament Actions -->
+                <div class="mt-auto">
+                    {% if tournament.status == 'registration' %}
+                        <div class="alert alert-success py-2 mb-3">
+                            <small>
+                                <i class="fas fa-info-circle me-1"></i>
+                                Use <code>/join_tournament {{ tournament.id }}</code> in Discord to join!
+                            </small>
+                        </div>
+                    {% elif tournament.status == 'active' %}
+                        <div class="alert alert-warning py-2 mb-3">
+                            <small>
+                                <i class="fas fa-play-circle me-1"></i>
+                                Tournament is currently in progress
+                            </small>
+                        </div>
+                    {% elif tournament.status == 'completed' %}
+                        <div class="alert alert-info py-2 mb-3">
+                            <small>
+                                <i class="fas fa-check-circle me-1"></i>
+                                Tournament has been completed
+                            </small>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Tournament Dates -->
+                <div class="row mt-auto pt-2 border-top">
+                    <div class="col-6">
+                        <small class="text-muted">
+                            <i class="fas fa-calendar-plus me-1"></i>
+                            Created: {{ tournament.created_at[:10] }}
+                        </small>
+                    </div>
+                    {% if tournament.started_at %}
+                    <div class="col-6 text-end">
+                        <small class="text-muted">
+                            <i class="fas fa-play me-1"></i>
+                            Started: {{ tournament.started_at[:10] }}
+                        </small>
+                    </div>
+                    {% endif %}
+                </div>
+
+                {% if tournament.completed_at %}
+                <div class="row mt-1">
+                    <div class="col-12 text-end">
+                        <small class="text-muted">
+                            <i class="fas fa-flag-checkered me-1"></i>
+                            Completed: {{ tournament.completed_at[:10] }}
+                        </small>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Tournament Statistics Summary -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-chart-bar me-2"></i>Tournament Statistics
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-lg-2 col-md-4 col-6 mb-3">
+                        <h5 class="text-primary">{{ tournaments|length }}</h5>
+                        <small class="text-muted">Total Tournaments</small>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-6 mb-3">
+                        <h5 class="text-success">
+                            {{ tournaments|selectattr('status', 'equalto', 'registration')|list|length }}
+                        </h5>
+                        <small class="text-muted">Registration Open</small>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-6 mb-3">
+                        <h5 class="text-warning">
+                            {{ tournaments|selectattr('status', 'equalto', 'active')|list|length }}
+                        </h5>
+                        <small class="text-muted">Active</small>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-6 mb-3">
+                        <h5 class="text-info">
+                            {{ tournaments|selectattr('status', 'equalto', 'completed')|list|length }}
+                        </h5>
+                        <small class="text-muted">Completed</small>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-6 mb-3">
+                        <h5 class="text-secondary">
+                            {% set total_participants = tournaments|sum(attribute='participants')|length %}
+                            {{ total_participants if total_participants else 0 }}
+                        </h5>
+                        <small class="text-muted">Total Participants</small>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-6 mb-3">
+                        <h5 class="text-dark">
+                            {% if tournaments|length > 0 %}
+                                {{ "%.1f"|format((tournaments|selectattr('status', 'equalto', 'completed')|list|length / tournaments|length * 100)) }}%
+                            {% else %}
+                                0%
+                            {% endif %}
+                        </h5>
+                        <small class="text-muted">Completion Rate</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tournament Instructions -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card bg-dark border-primary">
+            <div class="card-header bg-primary">
+                <h5 class="card-title mb-0">
+                    <i class="fab fa-discord me-2"></i>How to Participate in Tournaments
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>For Players:</h6>
+                        <ol>
+                            <li>Register first: <code>/register</code></li>
+                            <li>Join a tournament: <code>/join_tournament [ID]</code></li>
+                            <li>Check tournament info: <code>/tournament_info [ID]</code></li>
+                            <li>Wait for matches to be scheduled</li>
+                        </ol>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>For Admins:</h6>
+                        <ol>
+                            <li>Create tournament: <code>/create_tournament</code></li>
+                            <li>Start tournament: <code>/start_tournament [ID]</code></li>
+                            <li>Create matches: <code>/admin_match @p1 @p2 day hour minute</code></li>
+                            <li>Update results: <code>/admin_update_stats</code></li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% else %}
+<div class="text-center py-5">
+    <i class="fas fa-trophy fa-5x text-muted mb-4"></i>
+    <h3 class="text-muted">No Tournaments Found</h3>
+    <p class="text-muted mb-4">No tournaments have been created yet.</p>
+    <div class="alert alert-info d-inline-block">
+        <i class="fas fa-info-circle me-2"></i>
+        Admins can create tournaments using the <code>/create_tournament</code> command in Discord.
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+function filterTournaments(status) {
+    const tournamentCards = document.querySelectorAll('.tournament-card');
+    
+    tournamentCards.forEach(card => {
+        if (status === 'all' || card.dataset.status === status) {
+            card.style.display = 'block';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+    
+    // Update button states
+    document.querySelectorAll('.btn-group .btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    event.target.classList.add('active');
+}
+
+// Set initial filter to 'all'
+document.addEventListener('DOMContentLoaded', function() {
+    // Auto-select "All" filter on page load
+    const allButton = document.querySelector('.btn-group .btn[onclick*="all"]');
+    if (allButton) {
+        allButton.classList.add('active');
+    }
+});
+
+// Auto-refresh tournament data every 60 seconds
+setInterval(function() {
+    // This could be enhanced to fetch updated tournament data
+    console.log('Auto-refreshing tournament data...');
+}, 60000);
+</script>
+{% endblock %}

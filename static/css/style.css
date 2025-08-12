@@ -1,0 +1,557 @@
+/* Custom styles for BombSquad Tournament Bot */
+
+:root {
+    --bs-primary: #0d6efd;
+    --bs-success: #198754;
+    --bs-warning: #ffc107;
+    --bs-danger: #dc3545;
+    --bs-info: #0dcaf0;
+    --bs-dark: #212529;
+    --bs-light: #f8f9fa;
+    --tournament-gold: #ffd700;
+    --tournament-silver: #c0c0c0;
+    --tournament-bronze: #cd7f32;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    min-height: 100vh;
+    color: #ffffff;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+}
+
+.display-4 {
+    font-weight: 700;
+}
+
+/* Hero Section */
+.hero-icon {
+    animation: pulse 2s infinite;
+    filter: drop-shadow(0 0 20px rgba(255, 193, 7, 0.3));
+}
+
+@keyframes pulse {
+    0% { 
+        transform: scale(1); 
+        filter: drop-shadow(0 0 20px rgba(255, 193, 7, 0.3));
+    }
+    50% { 
+        transform: scale(1.05); 
+        filter: drop-shadow(0 0 30px rgba(255, 193, 7, 0.5));
+    }
+    100% { 
+        transform: scale(1); 
+        filter: drop-shadow(0 0 20px rgba(255, 193, 7, 0.3));
+    }
+}
+
+/* Status Items */
+.status-item {
+    padding: 1.5rem;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    border: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.status-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Feature Icons */
+.feature-icon {
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.feature-icon:hover {
+    transform: scale(1.1) rotate(5deg);
+}
+
+.feature-icon i {
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+/* Cards */
+.card {
+    border: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3);
+}
+
+.card-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.08);
+    padding: 1rem 1.25rem;
+}
+
+.card-body {
+    padding: 1.25rem;
+}
+
+/* Player Cards */
+.player-card {
+    transition: all 0.3s ease;
+}
+
+.player-card:hover .card {
+    border-left: 4px solid var(--bs-primary);
+}
+
+/* Tournament Cards */
+.tournament-card {
+    transition: all 0.3s ease;
+}
+
+.tournament-card[data-status="registration"] .card {
+    border-left: 4px solid var(--bs-success);
+}
+
+.tournament-card[data-status="active"] .card {
+    border-left: 4px solid var(--bs-warning);
+}
+
+.tournament-card[data-status="completed"] .card {
+    border-left: 4px solid var(--bs-info);
+}
+
+/* Match Cards */
+.match-card {
+    transition: all 0.3s ease;
+}
+
+.match-card[data-status="completed"] .card {
+    border-left: 4px solid var(--bs-success);
+}
+
+.match-card[data-status="accepted"] .card {
+    border-left: 4px solid var(--bs-warning);
+}
+
+.match-card[data-status="pending"] .card {
+    border-left: 4px solid var(--bs-info);
+}
+
+.match-card[data-status="declined"] .card {
+    border-left: 4px solid var(--bs-danger);
+}
+
+/* Server Info */
+.server-info code {
+    background: rgba(13, 110, 253, 0.15);
+    border: 1px solid rgba(13, 110, 253, 0.3);
+    padding: 0.75rem 1.25rem;
+    border-radius: 8px;
+    display: inline-block;
+    font-weight: bold;
+    letter-spacing: 1px;
+    font-size: 1.1em;
+    color: #ffffff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Language Flags */
+.language-flags .badge {
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+    margin-right: 0.5rem;
+    border-radius: 20px;
+}
+
+/* Navigation */
+.navbar {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+}
+
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.4rem;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.navbar-nav .nav-link {
+    transition: all 0.3s ease;
+    border-radius: 6px;
+    margin: 0 0.25rem;
+}
+
+.navbar-nav .nav-link:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-1px);
+}
+
+.navbar-text {
+    font-weight: 500;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Footer */
+footer {
+    background: linear-gradient(135deg, #212529 0%, #343a40 100%) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Progress Bars */
+.progress {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    transition: width 0.6s ease;
+    border-radius: 10px;
+}
+
+/* Badges */
+.badge {
+    font-weight: 500;
+    padding: 0.5rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.85em;
+}
+
+/* Buttons */
+.btn {
+    transition: all 0.3s ease;
+    border-radius: 8px;
+    font-weight: 500;
+    padding: 0.625rem 1.25rem;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.btn-lg {
+    padding: 0.875rem 2rem;
+    font-size: 1.1rem;
+}
+
+.btn-sm {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+}
+
+/* Button Groups */
+.btn-group .btn {
+    margin: 0;
+    border-radius: 0;
+}
+
+.btn-group .btn:first-child {
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+
+.btn-group .btn:last-child {
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+.btn-group .btn.active {
+    background: var(--bs-primary);
+    border-color: var(--bs-primary);
+    color: white;
+    box-shadow: 0 2px 8px rgba(13, 110, 253, 0.3);
+}
+
+/* Alerts */
+.alert {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.alert-success {
+    background: rgba(25, 135, 84, 0.1);
+    border-left: 4px solid var(--bs-success);
+    color: #d1e7dd;
+}
+
+.alert-warning {
+    background: rgba(255, 193, 7, 0.1);
+    border-left: 4px solid var(--bs-warning);
+    color: #fff3cd;
+}
+
+.alert-info {
+    background: rgba(13, 202, 240, 0.1);
+    border-left: 4px solid var(--bs-info);
+    color: #d1ecf1;
+}
+
+.alert-danger {
+    background: rgba(220, 53, 69, 0.1);
+    border-left: 4px solid var(--bs-danger);
+    color: #f8d7da;
+}
+
+/* Code elements */
+code {
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: var(--bs-info) !important;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Lists */
+.list-group-item {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: inherit;
+    transition: all 0.3s ease;
+}
+
+.list-group-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+    transform: translateX(5px);
+}
+
+/* Participant badges */
+.participants-preview .badge {
+    transition: all 0.3s ease;
+}
+
+.participants-preview .badge:hover {
+    transform: scale(1.05);
+}
+
+/* Tournament details */
+.tournament-details {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .display-4 {
+        font-size: 2.5rem;
+    }
+    
+    .hero-icon .fa-5x {
+        font-size: 3.5rem !important;
+    }
+    
+    .card-body {
+        padding: 1rem;
+    }
+    
+    .status-item {
+        padding: 1rem;
+    }
+    
+    .btn-lg {
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .display-4 {
+        font-size: 2rem;
+    }
+    
+    .hero-icon .fa-5x {
+        font-size: 3rem !important;
+    }
+    
+    .navbar-brand {
+        font-size: 1.2rem;
+    }
+    
+    .btn-group {
+        flex-direction: column;
+    }
+    
+    .btn-group .btn {
+        border-radius: 8px !important;
+        margin-bottom: 0.25rem;
+    }
+}
+
+/* Animation for cards */
+.card {
+    animation: fadeInUp 0.6s ease-out;
+    animation-fill-mode: both;
+}
+
+.card:nth-child(1) { animation-delay: 0.1s; }
+.card:nth-child(2) { animation-delay: 0.2s; }
+.card:nth-child(3) { animation-delay: 0.3s; }
+.card:nth-child(4) { animation-delay: 0.4s; }
+.card:nth-child(5) { animation-delay: 0.5s; }
+.card:nth-child(6) { animation-delay: 0.6s; }
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #2d2d2d;
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(to bottom, #555, #777);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(to bottom, #777, #999);
+}
+
+/* Loading states */
+.loading {
+    opacity: 0.7;
+    pointer-events: none;
+    position: relative;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid var(--bs-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Success states */
+.success-pulse {
+    animation: successPulse 1s ease-in-out;
+}
+
+@keyframes successPulse {
+    0% { background-color: transparent; }
+    50% { background-color: rgba(25, 135, 84, 0.1); }
+    100% { background-color: transparent; }
+}
+
+/* Text animations */
+.card-title {
+    transition: color 0.3s ease;
+}
+
+.card:hover .card-title {
+    color: var(--bs-primary) !important;
+}
+
+/* Statistics cards special effects */
+.status-item.bg-primary {
+    background: linear-gradient(135deg, var(--bs-primary) 0%, #0b5ed7 100%) !important;
+}
+
+.status-item.bg-success {
+    background: linear-gradient(135deg, var(--bs-success) 0%, #146c43 100%) !important;
+}
+
+.status-item.bg-warning {
+    background: linear-gradient(135deg, var(--bs-warning) 0%, #ffca2c 100%) !important;
+    color: #000 !important;
+}
+
+.status-item.bg-info {
+    background: linear-gradient(135deg, var(--bs-info) 0%, #3dd5f3 100%) !important;
+    color: #000 !important;
+}
+
+.status-item.bg-danger {
+    background: linear-gradient(135deg, var(--bs-danger) 0%, #b02a37 100%) !important;
+}
+
+.status-item.bg-secondary {
+    background: linear-gradient(135deg, #6c757d 0%, #495057 100%) !important;
+}
+
+/* Hover effects for interactive elements */
+.nav-link, .btn, .badge, .alert {
+    cursor: pointer;
+}
+
+/* Focus states for accessibility */
+.btn:focus,
+.nav-link:focus {
+    outline: 2px solid var(--bs-primary);
+    outline-offset: 2px;
+}
+
+/* Dark mode specific adjustments */
+[data-bs-theme="dark"] .card {
+    background: rgba(255, 255, 255, 0.08) !important;
+}
+
+[data-bs-theme="dark"] .list-group-item {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-bs-theme="dark"] .navbar-text {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+/* Tournament specific styles */
+.tournament-card .progress-bar.bg-success {
+    background: linear-gradient(to right, var(--bs-success), #20c997) !important;
+}
+
+.participants-preview {
+    max-height: 60px;
+    overflow-y: auto;
+}
+
+.participants-preview::-webkit-scrollbar {
+    width: 4px;
+}
+
+.participants-preview::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 2px;
+}

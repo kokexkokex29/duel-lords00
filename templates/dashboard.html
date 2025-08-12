@@ -1,0 +1,221 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - BombSquad Tournament Bot{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h2">
+        <i class="fas fa-chart-line me-2"></i>Tournament Dashboard
+    </h1>
+    <button class="btn btn-outline-primary" onclick="refreshData()">
+        <i class="fas fa-sync me-1"></i>Refresh
+    </button>
+</div>
+
+<!-- Statistics Overview -->
+<div class="row mb-4">
+    <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+        <div class="card text-white bg-primary">
+            <div class="card-body text-center">
+                <i class="fas fa-users fa-2x mb-2"></i>
+                <h4 id="total-players">{{ stats.get('total_players', 0) }}</h4>
+                <small>Total Players</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+        <div class="card text-white bg-success">
+            <div class="card-body text-center">
+                <i class="fas fa-trophy fa-2x mb-2"></i>
+                <h4 id="total-tournaments">{{ stats.get('total_tournaments', 0) }}</h4>
+                <small>Tournaments</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+        <div class="card text-white bg-warning">
+            <div class="card-body text-center">
+                <i class="fas fa-sword-cross fa-2x mb-2"></i>
+                <h4 id="total-matches">{{ stats.get('total_matches', 0) }}</h4>
+                <small>Total Matches</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+        <div class="card text-white bg-info">
+            <div class="card-body text-center">
+                <i class="fas fa-play fa-2x mb-2"></i>
+                <h4 id="active-tournaments">{{ stats.get('active_tournaments', 0) }}</h4>
+                <small>Active Tournaments</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+        <div class="card text-white bg-secondary">
+            <div class="card-body text-center">
+                <i class="fas fa-check fa-2x mb-2"></i>
+                <h4 id="completed-matches">{{ stats.get('completed_matches', 0) }}</h4>
+                <small>Completed</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+        <div class="card text-white bg-danger">
+            <div class="card-body text-center">
+                <i class="fas fa-clock fa-2x mb-2"></i>
+                <h4 id="pending-matches">{{ stats.get('pending_matches', 0) }}</h4>
+                <small>Pending</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Top Players -->
+    <div class="col-lg-6 mb-4">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-crown me-2 text-warning"></i>Top Players
+                </h5>
+                <a href="{{ url_for('players') }}" class="btn btn-sm btn-outline-primary">View All</a>
+            </div>
+            <div class="card-body">
+                {% if top_players %}
+                    <div class="list-group list-group-flush">
+                        {% for player in top_players[:5] %}
+                        <div class="list-group-item d-flex justify-content-between align-items-center bg-transparent border-0">
+                            <div>
+                                <strong>{{ player.username }}</strong>
+                                <small class="text-muted d-block">
+                                    {{ player.wins }}W / {{ player.losses }}L
+                                    {% if player.wins + player.losses > 0 %}
+                                        ({{ "%.1f"|format((player.wins / (player.wins + player.losses)) * 100) }}%)
+                                    {% endif %}
+                                </small>
+                            </div>
+                            <div class="text-end">
+                                <span class="badge bg-primary">{{ player.wins }} wins</span>
+                                <small class="text-muted d-block">
+                                    {% if player.deaths > 0 %}
+                                        K/D: {{ "%.2f"|format(player.kills / player.deaths) }}
+                                    {% else %}
+                                        K/D: {{ player.kills }}
+                                    {% endif %}
+                                </small>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted text-center py-3">No players registered yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Matches -->
+    <div class="col-lg-6 mb-4">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-history me-2 text-info"></i>Recent Matches
+                </h5>
+                <a href="{{ url_for('matches') }}" class="btn btn-sm btn-outline-primary">View All</a>
+            </div>
+            <div class="card-body">
+                {% if recent_matches %}
+                    <div class="list-group list-group-flush">
+                        {% for match in recent_matches[:5] %}
+                        <div class="list-group-item bg-transparent border-0">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <small class="text-muted">{{ match.description }}</small>
+                                    <div class="mt-1">
+                                        {% if match.status == 'completed' %}
+                                            <span class="badge bg-success">Completed</span>
+                                        {% elif match.status == 'accepted' %}
+                                            <span class="badge bg-warning">Accepted</span>
+                                        {% elif match.status == 'pending' %}
+                                            <span class="badge bg-info">Pending</span>
+                                        {% elif match.status == 'declined' %}
+                                            <span class="badge bg-danger">Declined</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <small class="text-muted">
+                                    {{ match.created_at[:10] }}
+                                </small>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted text-center py-3">No matches created yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Server Status -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-server me-2 text-success"></i>Server Status
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center">
+                            <div class="me-3">
+                                <span class="badge bg-success fs-6">
+                                    <i class="fas fa-circle me-1"></i>Online
+                                </span>
+                            </div>
+                            <div>
+                                <h6 class="mb-1">BombSquad Tournament Server</h6>
+                                <code class="fs-6">18.228.228.44:3827</code>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                        <small class="text-muted">
+                            <i class="fas fa-clock me-1"></i>
+                            Last updated: <span id="last-update">Just now</span>
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Auto-refresh functionality
+function refreshData() {
+    fetch('/api/stats')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('total-players').textContent = data.total_players || 0;
+            document.getElementById('total-tournaments').textContent = data.total_tournaments || 0;
+            document.getElementById('total-matches').textContent = data.total_matches || 0;
+            document.getElementById('active-tournaments').textContent = data.active_tournaments || 0;
+            document.getElementById('completed-matches').textContent = data.completed_matches || 0;
+            document.getElementById('pending-matches').textContent = data.pending_matches || 0;
+            document.getElementById('last-update').textContent = 'Just now';
+        })
+        .catch(error => {
+            console.error('Error fetching stats:', error);
+        });
+}
+
+// Auto-refresh every 30 seconds
+setInterval(refreshData, 30000);
+</script>
+{% endblock %}

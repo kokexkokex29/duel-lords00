@@ -1,0 +1,218 @@
+{% extends "base.html" %}
+
+{% block title %}BombSquad Tournament Bot - Home{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="row mb-5">
+    <div class="col-12 text-center">
+        <div class="hero-icon mb-4">
+            <i class="fas fa-bomb fa-5x text-warning"></i>
+        </div>
+        <h1 class="display-4 fw-bold text-light mb-3">DUEL LORDS Tournament Bot</h1>
+        <p class="lead text-muted mb-4">Professional Discord bot for BombSquad tournament management with 25+ slash commands</p>
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-lg">
+                <i class="fas fa-chart-line me-2"></i>View Dashboard
+            </a>
+            <a href="{{ url_for('players') }}" class="btn btn-outline-success btn-lg">
+                <i class="fas fa-users me-2"></i>Browse Players
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row mb-5">
+    <div class="col-md-3 mb-3">
+        <div class="card text-center status-item bg-primary">
+            <div class="card-body">
+                <i class="fas fa-users fa-2x mb-3"></i>
+                <h3 class="card-title">{{ stats.get('total_players', 0) }}</h3>
+                <p class="card-text">Registered Players</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card text-center status-item bg-success">
+            <div class="card-body">
+                <i class="fas fa-trophy fa-2x mb-3"></i>
+                <h3 class="card-title">{{ stats.get('total_tournaments', 0) }}</h3>
+                <p class="card-text">Tournaments</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card text-center status-item bg-warning">
+            <div class="card-body">
+                <i class="fas fa-sword-cross fa-2x mb-3"></i>
+                <h3 class="card-title">{{ stats.get('total_matches', 0) }}</h3>
+                <p class="card-text">Total Matches</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card text-center status-item bg-info">
+            <div class="card-body">
+                <i class="fas fa-play fa-2x mb-3"></i>
+                <h3 class="card-title">{{ stats.get('active_tournaments', 0) }}</h3>
+                <p class="card-text">Active Tournaments</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Features -->
+<div class="row mb-5">
+    <div class="col-12">
+        <h2 class="text-center mb-4">Bot Features</h2>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <div class="feature-icon mb-3">
+                    <i class="fas fa-robot fa-3x text-primary"></i>
+                </div>
+                <h5 class="card-title">Discord Integration</h5>
+                <p class="card-text">Full Discord bot with slash commands for easy tournament management and player interactions.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <div class="feature-icon mb-3">
+                    <i class="fas fa-chart-bar fa-3x text-success"></i>
+                </div>
+                <h5 class="card-title">Live Statistics</h5>
+                <p class="card-text">Real-time tracking of player statistics, match results, and tournament progress with detailed analytics.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <div class="feature-icon mb-3">
+                    <i class="fas fa-globe fa-3x text-warning"></i>
+                </div>
+                <h5 class="card-title">Multi-Language</h5>
+                <p class="card-text">Support for English and Portuguese languages to serve the global BombSquad community.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <div class="feature-icon mb-3">
+                    <i class="fas fa-tournament fa-3x text-info"></i>
+                </div>
+                <h5 class="card-title">Tournament Management</h5>
+                <p class="card-text">Complete tournament system with brackets, match scheduling, and automated result tracking.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <div class="feature-icon mb-3">
+                    <i class="fas fa-shield-alt fa-3x text-danger"></i>
+                </div>
+                <h5 class="card-title">Admin Controls</h5>
+                <p class="card-text">Enhanced admin commands for match creation, statistics management, and tournament administration.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <div class="feature-icon mb-3">
+                    <i class="fas fa-server fa-3x text-secondary"></i>
+                </div>
+                <h5 class="card-title">Dedicated Server</h5>
+                <p class="card-text">Connect to our dedicated BombSquad server for fair and competitive tournament matches.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Server Information -->
+<div class="row mb-5">
+    <div class="col-12">
+        <div class="card bg-dark border-primary">
+            <div class="card-header bg-primary">
+                <h4 class="card-title mb-0">
+                    <i class="fas fa-server me-2"></i>BombSquad Server Information
+                </h4>
+            </div>
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <h5>Connect to Our Server</h5>
+                        <div class="server-info mb-3">
+                            <p class="mb-2"><strong>Server IP:</strong></p>
+                            <code class="fs-5">18.228.228.44:3827</code>
+                        </div>
+                        <p class="text-muted">Join our dedicated BombSquad server for tournament matches and practice sessions.</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Connection Steps:</h6>
+                        <ol class="list-unstyled">
+                            <li><i class="fas fa-play text-success me-2"></i>Open BombSquad</li>
+                            <li><i class="fas fa-users text-info me-2"></i>Go to Multiplayer</li>
+                            <li><i class="fas fa-globe text-warning me-2"></i>Select "By Address"</li>
+                            <li><i class="fas fa-keyboard text-primary me-2"></i>Enter the IP above</li>
+                            <li><i class="fas fa-link text-success me-2"></i>Click Connect</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Discord Commands -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title mb-0">
+                    <i class="fab fa-discord me-2 text-primary"></i>Getting Started
+                </h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Player Commands:</h6>
+                        <ul class="list-unstyled">
+                            <li><code>/register</code> - Register for tournaments</li>
+                            <li><code>/stats</code> - View your statistics</li>
+                            <li><code>/leaderboard</code> - See tournament rankings</li>
+                            <li><code>/challenge @player</code> - Challenge another player</li>
+                            <li><code>/server</code> - Get server information</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Admin Commands:</h6>
+                        <ul class="list-unstyled">
+                            <li><code>/admin_match @p1 @p2 day hour minute</code> - Create match</li>
+                            <li><code>/admin_update_stats</code> - Update player stats</li>
+                            <li><code>/create_tournament</code> - Create new tournament</li>
+                            <li><code>/start_tournament</code> - Start tournament</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="alert alert-info mt-3">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>Note:</strong> Use slash commands (/) to interact with the bot in Discord. All commands are available immediately after inviting the bot to your server.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

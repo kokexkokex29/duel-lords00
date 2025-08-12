@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+
+{% block title %}Bot Status - BombSquad Tournament Bot{% endblock %}
+
+{% block content %}
+<!-- Bot Status Header -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center">
+            <h1 class="text-light"><i class="fas fa-robot me-2"></i>Bot Status & Management</h1>
+            <div class="badge {{ 'bg-success' if stats.get('token_configured') else 'bg-danger' }} fs-6">
+                {{ 'Configured' if stats.get('token_configured') else 'Not Configured' }}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Status Cards -->
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="card text-center {{ 'bg-success' if stats.get('token_configured') else 'bg-danger' }}">
+            <div class="card-body">
+                <i class="fas fa-key fa-2x mb-3"></i>
+                <h5>Discord Token</h5>
+                <p class="mb-0">{{ 'Configured' if stats.get('token_configured') else 'Missing' }}</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+        <div class="card text-center bg-info">
+            <div class="card-body">
+                <i class="fas fa-terminal fa-2x mb-3"></i>
+                <h5>Commands</h5>
+                <h3 class="mb-0">{{ stats.get('total_commands', 0) }}</h3>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+        <div class="card text-center bg-warning">
+            <div class="card-body">
+                <i class="fas fa-server fa-2x mb-3"></i>
+                <h5>Game Server</h5>
+                <p class="mb-0 small">{{ stats.get('server_ip', 'N/A') }}</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+        <div class="card text-center {{ 'bg-success' if stats.get('bot_online') else 'bg-secondary' }}">
+            <div class="card-body">
+                <i class="fas fa-circle fa-2x mb-3"></i>
+                <h5>Bot Status</h5>
+                <p class="mb-0">{{ 'Online' if stats.get('bot_online') else 'Offline' }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bot Setup Instructions -->
+{% if not stats.get('token_configured') %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="alert alert-warning">
+            <h5><i class="fas fa-exclamation-triangle me-2"></i>Bot Setup Required</h5>
+            <p class="mb-3">To activate the Discord bot, you need to add your Discord Bot Token to Replit Secrets:</p>
+            <ol>
+                <li>Go to your Replit project</li>
+                <li>Click on "Secrets" in the left sidebar</li>
+                <li>Add a new secret with key: <code>DISCORD_TOKEN</code></li>
+                <li>Paste your Discord bot token as the value</li>
+                <li>Restart the application</li>
+            </ol>
+            <p class="mb-0">
+                <strong>Need a Discord Bot Token?</strong> 
+                <a href="https://discord.com/developers/applications" target="_blank" class="text-decoration-none">
+                    Create one here <i class="fas fa-external-link-alt"></i>
+                </a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Bot Commands Overview -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-list me-2"></i>Available Commands</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6 class="text-primary">Player Commands</h6>
+                        <ul class="list-unstyled">
+                            <li><code>/register</code> - Register as a player</li>
+                            <li><code>/profile</code> - View your profile</li>
+                            <li><code>/stats</code> - View your statistics</li>
+                            <li><code>/leaderboard</code> - View leaderboard</li>
+                        </ul>
+                        
+                        <h6 class="text-success">Match Commands</h6>
+                        <ul class="list-unstyled">
+                            <li><code>/challenge</code> - Challenge another player</li>
+                            <li><code>/accept</code> - Accept a challenge</li>
+                            <li><code>/decline</code> - Decline a challenge</li>
+                            <li><code>/result</code> - Submit match result</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <h6 class="text-warning">Tournament Commands</h6>
+                        <ul class="list-unstyled">
+                            <li><code>/tournament create</code> - Create tournament</li>
+                            <li><code>/tournament join</code> - Join tournament</li>
+                            <li><code>/tournament list</code> - List tournaments</li>
+                            <li><code>/tournament bracket</code> - View bracket</li>
+                        </ul>
+                        
+                        <h6 class="text-info">General Commands</h6>
+                        <ul class="list-unstyled">
+                            <li><code>/help</code> - Show help</li>
+                            <li><code>/ping</code> - Check bot status</li>
+                            <li><code>/server</code> - Get server info</li>
+                            <li><code>/rules</code> - Tournament rules</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Activity Logs -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-history me-2"></i>Recent Activity</h5>
+            </div>
+            <div class="card-body">
+                {% if activity_logs %}
+                <div class="table-responsive">
+                    <table class="table table-dark table-striped">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Action</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for log in activity_logs %}
+                            <tr>
+                                <td>{{ log.time }}</td>
+                                <td>{{ log.action }}</td>
+                                <td>
+                                    <span class="badge {{ 'bg-success' if log.status == 'success' else 'bg-danger' }}">
+                                        {{ log.status|title }}
+                                    </span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted text-center">No activity logs available</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Auto-refresh page every 30 seconds
+setInterval(function() {
+    location.reload();
+}, 30000);
+
+console.log('Bot Status page loaded');
+</script>
+{% endblock %}

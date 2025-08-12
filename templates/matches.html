@@ -1,0 +1,219 @@
+{% extends "base.html" %}
+
+{% block title %}Matches - BombSquad Tournament Bot{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h2">
+        <i class="fas fa-sword-cross me-2"></i>Tournament Matches
+    </h1>
+    <div class="btn-group" role="group">
+        <button type="button" class="btn btn-outline-primary" onclick="filterMatches('all')">All</button>
+        <button type="button" class="btn btn-outline-warning" onclick="filterMatches('pending')">Pending</button>
+        <button type="button" class="btn btn-outline-info" onclick="filterMatches('accepted')">Accepted</button>
+        <button type="button" class="btn btn-outline-success" onclick="filterMatches('completed')">Completed</button>
+        <button type="button" class="btn btn-outline-danger" onclick="filterMatches('declined')">Declined</button>
+    </div>
+</div>
+
+{% if matches %}
+<div class="row" id="matches-container">
+    {% for match in matches %}
+    <div class="col-lg-6 col-xl-4 mb-4 match-card" data-status="{{ match.status }}">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h6 class="mb-0">Match {{ match.id[:8] }}</h6>
+                {% if match.status == 'completed' %}
+                    <span class="badge bg-success">Completed</span>
+                {% elif match.status == 'accepted' %}
+                    <span class="badge bg-warning">Accepted</span>
+                {% elif match.status == 'pending' %}
+                    <span class="badge bg-info">Pending</span>
+                {% elif match.status == 'declined' %}
+                    <span class="badge bg-danger">Declined</span>
+                {% endif %}
+            </div>
+            <div class="card-body">
+                <div class="text-center mb-3">
+                    <div class="row align-items-center">
+                        <div class="col-5 text-end">
+                            <strong>
+                                {% if match.challenger_id in players %}
+                                    {{ players[match.challenger_id].username }}
+                                {% else %}
+                                    Unknown Player
+                                {% endif %}
+                            </strong>
+                        </div>
+                        <div class="col-2 text-center">
+                            <h4 class="text-muted mb-0">VS</h4>
+                        </div>
+                        <div class="col-5 text-start">
+                            <strong>
+                                {% if match.opponent_id in players %}
+                                    {{ players[match.opponent_id].username }}
+                                {% else %}
+                                    Unknown Player
+                                {% endif %}
+                            </strong>
+                        </div>
+                    </div>
+                </div>
+
+                {% if match.status == 'completed' and match.winner_id %}
+                <div class="text-center mb-3">
+                    <div class="alert alert-success py-2">
+                        <i class="fas fa-crown me-1"></i>
+                        Winner: 
+                        <strong>
+                            {% if match.winner_id in players %}
+                                {{ players[match.winner_id].username }}
+                            {% else %}
+                                Unknown Player
+                            {% endif %}
+                        </strong>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if match.stats %}
+                <div class="row text-center small mb-3">
+                    <div class="col-6">
+                        <div class="border-end">
+                            <div>{{ match.stats.get('challenger_kills', 0) }} kills</div>
+                            <div class="text-muted">{{ match.stats.get('challenger_deaths', 0) }} deaths</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div>{{ match.stats.get('opponent_kills', 0) }} kills</div>
+                        <div class="text-muted">{{ match.stats.get('opponent_deaths', 0) }} deaths</div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="mb-3">
+                    <small class="text-muted">Description:</small>
+                    <div>{{ match.description }}</div>
+                </div>
+
+                {% if match.scheduled_time %}
+                <div class="mb-3">
+                    <small class="text-muted">
+                        <i class="fas fa-calendar me-1"></i>
+                        Scheduled: {{ match.scheduled_time[:16].replace('T', ' ') }}
+                    </small>
+                </div>
+                {% endif %}
+
+                <div class="row">
+                    <div class="col-6">
+                        <small class="text-muted">
+                            <i class="fas fa-plus me-1"></i>
+                            Created: {{ match.created_at[:10] }}
+                        </small>
+                    </div>
+                    {% if match.completed_at %}
+                    <div class="col-6 text-end">
+                        <small class="text-muted">
+                            <i class="fas fa-check me-1"></i>
+                            Completed: {{ match.completed_at[:10] }}
+                        </small>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Match Statistics Summary -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-chart-pie me-2"></i>Match Statistics
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-2 col-6 mb-3">
+                        <h5 class="text-primary">{{ matches|length }}</h5>
+                        <small class="text-muted">Total Matches</small>
+                    </div>
+                    <div class="col-md-2 col-6 mb-3">
+                        <h5 class="text-success">
+                            {{ matches|selectattr('status', 'equalto', 'completed')|list|length }}
+                        </h5>
+                        <small class="text-muted">Completed</small>
+                    </div>
+                    <div class="col-md-2 col-6 mb-3">
+                        <h5 class="text-warning">
+                            {{ matches|selectattr('status', 'equalto', 'accepted')|list|length }}
+                        </h5>
+                        <small class="text-muted">Accepted</small>
+                    </div>
+                    <div class="col-md-2 col-6 mb-3">
+                        <h5 class="text-info">
+                            {{ matches|selectattr('status', 'equalto', 'pending')|list|length }}
+                        </h5>
+                        <small class="text-muted">Pending</small>
+                    </div>
+                    <div class="col-md-2 col-6 mb-3">
+                        <h5 class="text-danger">
+                            {{ matches|selectattr('status', 'equalto', 'declined')|list|length }}
+                        </h5>
+                        <small class="text-muted">Declined</small>
+                    </div>
+                    <div class="col-md-2 col-6 mb-3">
+                        <h5 class="text-secondary">
+                            {{ "%.1f"|format((matches|selectattr('status', 'equalto', 'completed')|list|length / matches|length * 100) if matches|length > 0 else 0) }}%
+                        </h5>
+                        <small class="text-muted">Completion Rate</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% else %}
+<div class="text-center py-5">
+    <i class="fas fa-sword-cross fa-5x text-muted mb-4"></i>
+    <h3 class="text-muted">No Matches Found</h3>
+    <p class="text-muted mb-4">No matches have been created yet.</p>
+    <div class="alert alert-info d-inline-block">
+        <i class="fas fa-info-circle me-2"></i>
+        Players can create matches using the <code>/challenge</code> command in Discord.
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+function filterMatches(status) {
+    const matchCards = document.querySelectorAll('.match-card');
+    
+    matchCards.forEach(card => {
+        if (status === 'all' || card.dataset.status === status) {
+            card.style.display = 'block';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+    
+    // Update button states
+    document.querySelectorAll('.btn-group .btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    event.target.classList.add('active');
+}
+
+// Set initial filter to 'all'
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelector('.btn-group .btn').classList.add('active');
+});
+</script>
+{% endblock %}
