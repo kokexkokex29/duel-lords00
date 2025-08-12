@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: clan-lords-bombsquad-bot
+    env: python
+    buildCommand: pip install -r requirements_render.txt
+    startCommand: gunicorn --config gunicorn.conf.py main:app
+    plan: free
+    region: oregon
+    envVars:
+      - key: DISCORD_TOKEN
+        sync: false
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: PYTHONPATH
+        value: /opt/render/project/src
+    healthCheckPath: /

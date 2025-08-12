@@ -1,0 +1,29 @@
+{
+  "name": "Clan Lords Bombsquad Tournament Bot",
+  "description": "Discord bot for managing BombSquad tournaments with player registration, match scheduling, and leaderboards",
+  "repository": "https://github.com/yourusername/clan-lords-bombsquad-bot",
+  "logo": "https://via.placeholder.com/128x128?text=CL",
+  "keywords": ["discord", "bot", "bombsquad", "tournament", "gaming"],
+  "env": {
+    "DISCORD_TOKEN": {
+      "description": "Discord bot token from Discord Developer Portal",
+      "required": true
+    },
+    "SESSION_SECRET": {
+      "description": "Random string for Flask session security",
+      "generator": "secret",
+      "required": true
+    }
+  },
+  "formation": {
+    "web": {
+      "quantity": 1,
+      "size": "free"
+    }
+  },
+  "buildpacks": [
+    {
+      "url": "heroku/python"
+    }
+  ]
+}
